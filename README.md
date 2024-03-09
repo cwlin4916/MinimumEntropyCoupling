@@ -12,6 +12,7 @@ The goal of the project, the problem it solves, and the approach you're taking.
 - [Testing](#testing)
 - [License](#license)
 - [Acknowledgments](#acknowledgments)
+- [Directores](#directories)
 
 ## Installation
 
@@ -21,7 +22,7 @@ Instructions on how to install and set up your project. Include commands to run 
 pip install -r requirements.txt
 ``` 
 
-### Directories 
+## Directories 
 ```
 - README.md                   # Project overview and setup instructions
 - data/                       # Directory for storing datasets

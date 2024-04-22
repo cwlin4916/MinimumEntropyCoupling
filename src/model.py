@@ -60,6 +60,8 @@ class DistributionTransformerModel(nn.Module):
         self.transformer_layers = nn.ModuleList([
             TransformerLayer(model_dim, num_heads, dropout) for _ in range(num_layers)
         ])
+        self.m = m
+        self.n = n 
         
         # Update this layer to match the doubled features from concatenation
         # the input would be of dimendsion (1,(m+n)*model_dim) where m,n are the sizes of the two marginals

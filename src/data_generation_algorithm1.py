@@ -1,5 +1,6 @@
 import numpy as np
 import torch
+import os
 
 def generate_and_adjust_matrices(m, n, k, seed, upper_bound=100000, lower_bound=1):
     """Generate matrices and adjust them to have uniform marginal distributions."""
@@ -29,16 +30,20 @@ def generate_and_adjust_matrices(m, n, k, seed, upper_bound=100000, lower_bound=
     
     return matrices
 
-def save_data(m, n, k, filename, seed):
-    """Save the adjusted matrices."""
+def save_data(m, n, k, seed):
+    """Save the adjusted matrices into structured directories."""
+    directory = f"data/algorithm_1"
+    os.makedirs(directory, exist_ok=True)
+    filename = os.path.join(directory, f"{m}_{n}_{k}_{seed}.pth")
     matrices = generate_and_adjust_matrices(m, n, k, seed)
     torch.save(matrices, filename)
     print(f"Data saved to {filename}")
-    #let us check a few elements 
-    print("few elements in the data")
-    for i in range(15):
+
+    # Optional: Displaying a few elements of the data
+    print("A few elements from the saved data:")
+    for i in range(min(15, len(matrices))):
         print(matrices[i])
 
 # Example usage
 if __name__ == "__main__":
-    save_data(m=2, n=2, k=10000, filename="data_matrices_10000.pth", seed=0)
+    save_data(m=2, n=2, k=10000, seed=1)

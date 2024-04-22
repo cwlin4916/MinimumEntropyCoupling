@@ -1,4 +1,4 @@
-# Project Title
+# Learning Minimum Entropy Coupling
 
 ## Description
 Within an information-theoretic framework of steganography, the security of a communication procedure is determined by its correspondence to a coupling. Specifically, a minimum entropy coupling ensures maximal efficiency in secure procedures. The goal of the current project is to explore the use of deep learning methods to learn minimum entropy coupling. Additionally, this study examines the potential for improved heuristics in MECs, addressing the open question of whether faster and more efficient methods can be developed for secure data transmission. 

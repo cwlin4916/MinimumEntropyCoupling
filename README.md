@@ -32,12 +32,4 @@ pip install -r requirements.txt
 - README.md                   # Project overview and setup instructions
 - data/                       # Directory for storing datasets
 - src/                        # Source code
-  - models/                   # Transformer model definitions
-  - utils/                    # Utility scripts
-- notebooks/                  # Jupyter notebooks for exploration and presentation
-- requirements.txt            # Project dependencies
-- scripts/                    # Scripts for training and evaluation
-- tests/                      # Automated tests
-- .gitignore                  # Specifies intentionally untracked files to ignore
-- LICENSE                     # Project license
 ``` 

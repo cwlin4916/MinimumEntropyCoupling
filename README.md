@@ -34,11 +34,7 @@ Following the approach used by Charton, who has done a series of research on “
 
 ## Installation
 
-Instructions on how to install and set up your project. Include commands to run if necessary.
-
-```bash
-pip install -r requirements.txt
-```
+Instructions on how to run code. 
 To train the model 
 ```bash
 python trainer.py

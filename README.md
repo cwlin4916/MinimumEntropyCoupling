@@ -48,10 +48,3 @@ To execute the data generation algorithm:
 ```bash
 python data_generation_algorithm1.py
 ``` 
-
-## Directories 
-```
-- README.md                   # Project overview and setup instructions
-- data/                       # Directory for storing datasets
-- src/                        # Source code
-``` 

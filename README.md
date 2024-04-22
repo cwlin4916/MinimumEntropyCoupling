@@ -1,7 +1,6 @@
 # Project Title
 
 ## Description
-The goal of the project, the problem it solves, and the approach you're taking.
 
 ## Table of Contents
 

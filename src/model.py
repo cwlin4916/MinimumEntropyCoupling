@@ -50,37 +50,46 @@ class TransformerLayer(nn.Module):
 """this process the two input marginals independently and outputs the joint distribution 
 """
 class DistributionTransformerModel(nn.Module):
-    def __init__(self, input_dim, model_dim, num_heads, num_layers, output_dim, m,n, dropout=0.1):
+    def __init__(self, input_dim, model_dim, num_heads, num_layers, output_dim, m,n, dropout=0.1, device=None):
         super().__init__()
+         # Set the device explicitly, default to CPU if no device is specified and no GPU is available
+        self.device = torch.device(device if device else ("cuda" if torch.cuda.is_available() else "cpu"))
+        self.to(self.device)  # Move the model to the specified device
+        
         self.embedding = nn.Linear(input_dim, model_dim)
         self.transformer_layers = nn.ModuleList([
             TransformerLayer(model_dim, num_heads, dropout) for _ in range(num_layers)
         ])
+        
         # Update this layer to match the doubled features from concatenation
         # the input would be of dimendsion (1,(m+n)*model_dim) where m,n are the sizes of the two marginals
-        self.final_layer = nn.Linear((m+n)*model_dim, output_dim)
+        self.final_layer = nn.Linear((m+n) * model_dim, m*n)
     def forward(self, dist1, dist2):
         # Concatenate distributions along the sequence dimension
+        
         concatenated_input = torch.cat((dist1, dist2), dim=1)
-        print("concatenated_input", concatenated_input.size())
+        # print("concatenated_input", concatenated_input.size())
         # this should be of shape (1, m+n, 1) or (batch_size, seq_len, input_dim) where seq_len = m+n 
         embedded_input = self.embedding(concatenated_input)
-        print("embedded_input", embedded_input.size()) 
+        # print("embedded_input", embedded_input.size()) 
         
         # Process through transformer layers
         output = embedded_input
         for layer in self.transformer_layers:
             output = layer(output)
         
-        print("output", output.size()) 
-        # flatten the output 
-        output_flat = output.view(1, -1)
-        print("output_flat", output_flat.size())
+        # print("output", output.size()) 
+        # Flatten the output correctly, maintaining the batch dimension
+        output_flat = output.view(output.size(0), -1)  # Reshape to [batch_size, -1]
+        # print("output_flat size", output_flat.size())
         # Final transformation to output dimensions and reshaping to matrix
+        #check output dimension
         final_output = self.final_layer(output_flat)
-        print("final_output", final_output.size())
-        m, n = dist1.size(1), dist2.size(1)
-        return final_output.view(m, n)  # Assuming output needs to be reshaped into a mxn matrix 
+        # print("final_output size", final_output.size())
+        # set m and n to the sizes of the marginals
+        m,n = dist1.size(1), dist2.size(1)
+        # print("m,n", m,n)
+        return final_output.view(-1, m, n)  # Reshape to [batch_size, m, n]
 
 # Example instantiation and usage
 if __name__ == "__main__":
@@ -92,4 +101,5 @@ if __name__ == "__main__":
     print("dist1", dist1)
     dist2 = torch.rand(1, n, 1)  # distribution over n elements
     output_matrix = model(dist1, dist2)
+    print("Size of output matrix:", output_matrix.size())
     print("Output matrix of dimension m*n:", output_matrix)

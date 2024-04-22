@@ -9,7 +9,7 @@ Following the approach used by Charton, who has done a series of research on “
 ## Table of Contents
 
 - [Description](#Description)
-- [Src file](#Src File Structure)
+- [Src file](#SrcFileStructure)
 - [Project Structure](#project-structure)
 - [Dependencies](#dependencies)
 - [Testing](#testing)

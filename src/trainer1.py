@@ -47,57 +47,57 @@ class Trainer:
         self.test_loader = test_loader
         self.optimizer = Adam(self.model.parameters(), lr=0.001)
         self.criterion = nn.MSELoss()
+        # Initialize as lists of lists
         self.train_losses = []
         self.test_losses = []
 
     def train(self, epochs):
         for epoch in range(epochs):
             self.model.train()
-            epoch_start_time = time.time()
-            train_loss = 0
+            train_loss = []
             for batch_idx, (row_sums, col_sums, matrices) in enumerate(self.train_loader):
-                start_time = time.time()
                 row_sums, col_sums, matrices = row_sums.to(self.model.device), col_sums.to(self.model.device), matrices.to(self.model.device)
-                
                 self.optimizer.zero_grad()
                 outputs = self.model(row_sums, col_sums)
                 loss = self.criterion(outputs, matrices)
                 loss.backward()
                 self.optimizer.step()
-                
-                train_loss += loss.item()
-                batch_time = time.time() - start_time
-                
-                
-                
+
+                train_loss.append(loss.item())
                 if batch_idx % 10 == 0:
-                    logging.info(f'Epoch {epoch}, Batch {batch_idx}, Loss: {loss.item():.4f}, Batch Time: {batch_time:.2f}s')
-                    
-            
-            avg_train_loss = train_loss / len(self.train_loader)
-            self.train_losses.append(avg_train_loss)
-            epoch_time = time.time() - epoch_start_time
-            
+                    logging.info(f'Epoch {epoch}, Batch {batch_idx}, Loss: {loss.item():.4f}')
+
+            self.train_losses.append(train_loss)
             test_loss = self.evaluate()
             self.test_losses.append(test_loss)
-            
-            logging.info(f'End of Epoch {epoch}, Train Loss: {avg_train_loss:.4f}, Test Loss: {test_loss:.4f}, Epoch Time: {epoch_time:.2f}s')
+            logging.info(f'End of Epoch {epoch}, Train Loss: {sum(train_loss)/len(train_loss):.4f}, Test Loss: {test_loss:.4f}')
 
     def evaluate(self):
         self.model.eval()
         total_loss = 0
-        eval_start_time = time.time()
         with torch.no_grad():
             for row_sums, col_sums, matrices in self.test_loader:
                 row_sums, col_sums, matrices = row_sums.to(self.model.device), col_sums.to(self.model.device), matrices.to(self.model.device)
                 outputs = self.model(row_sums, col_sums)
                 loss = self.criterion(outputs, matrices)
                 total_loss += loss.item()
-        
+
         avg_loss = total_loss / len(self.test_loader)
-        eval_time = time.time() - eval_start_time
-        logging.info(f'Evaluation done, Average Loss: {avg_loss:.4f}, Eval Time: {eval_time:.2f}s')
         return avg_loss
+
+def plot_epoch_loss(epoch_losses, epoch_number):
+    plt.figure(figsize=(10, 5))
+    plt.plot(epoch_losses, label=f'Loss for Epoch {epoch_number}')
+    plt.title(f'Training Loss over Batches for Epoch {epoch_number}')
+    plt.xlabel('Batch Number')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.grid(True)
+    
+    #save figure 
+    plt.savefig(f"epoch_{epoch_number}_loss.png")
+    plt.show()
+    print("figure saved as epoch_{epoch_number}_loss.png")
 
 
 # After training
@@ -107,3 +107,5 @@ if __name__ == "__main__":
     model = DistributionTransformerModel(input_dim=1, model_dim=512, num_heads=8, num_layers=3, output_dim=4, m=2, n=2)
     trainer = Trainer(model, dataloader_train, dataloader_test)
     trainer.train(epochs=1)
+    epoch_to_plot=0
+    plot_epoch_loss(trainer.train_losses[epoch_to_plot], epoch_to_plot)

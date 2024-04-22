@@ -48,6 +48,7 @@ To execute the data generation algorithm:
 
 ```bash
 python data_generation_algorithm1.py
+``` 
 
 ## Directories 
 ```

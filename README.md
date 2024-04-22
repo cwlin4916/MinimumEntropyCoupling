@@ -9,8 +9,7 @@ Following the approach used by Charton, who has done a series of research on “
 ## Table of Contents
 
 - [Description](#Description)
-- [Installation](#installation)
-- [Usage](#usage)
+- [Src file](#Src File Structure)
 - [Project Structure](#project-structure)
 - [Dependencies](#dependencies)
 - [Testing](#testing)
@@ -18,7 +17,7 @@ Following the approach used by Charton, who has done a series of research on “
 - [Acknowledgments](#acknowledgments)
 - [Directores](#directories)
 
-## Src File Structure
+## Src File Structure 
 
 - `data_generation_algorithm1.py`: Contains the algorithm for generating data matrices with a specific entropy coupling characteristic.
   

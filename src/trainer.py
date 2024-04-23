@@ -133,6 +133,8 @@ def plot_epoch_losses(train_losses, test_losses, data_label, model_params):
     plt.plot(test_losses, label='Test Loss')
     plt.title('Training and Test Loss over Epochs')
     plt.xlabel('Epoch Number')
+    #average y value is 0.006 so we will use log scale to see the difference
+    plt.yscale('log')
     plt.ylabel('Loss')
     plt.legend()
     fig_name = f"{data_label}_model_{model_params}_loss.png"
@@ -151,5 +153,7 @@ if __name__ == "__main__":
     # we will extract model params, which are m,n from the model 
     model_params = f"{model.m}_{model.n}"
     trainer = Trainer(model, dataloader_train, dataloader_test)
-    trainer.train(epochs=10)  # Example for training 10 epochs
+    trainer.train(epochs=100)  # Example for training 10 epochs
     plot_epoch_losses(trainer.train_losses, trainer.test_losses, data_label, model_params)
+    
+    

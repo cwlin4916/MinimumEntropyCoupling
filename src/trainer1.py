@@ -8,6 +8,7 @@ from torch.utils.data import DataLoader, TensorDataset
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from model import DistributionTransformerModel
+from datetime import datetime
 
 # Configure logging and directories
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -127,15 +128,27 @@ def plot_within_epoch_loss(epoch_losses, epoch_number):
     plt.show()
     logging.info(f"Figure saved as {fig_path}")
     
-def plot_epoch_losses(train_losses, test_losses, data_label, model_params):
+def plot_epoch_losses(train_losses, test_losses, data_label, model_params, skip_epochs=0):
+    # Ensure the figures directory exists
+    figures_directory = "figures"
+    os.makedirs(figures_directory, exist_ok=True)
+
+    train_losses = train_losses[skip_epochs:]
+    test_losses = test_losses[skip_epochs:]
+
     plt.figure(figsize=(10, 5))
-    plt.plot(train_losses, label='Train Loss')
-    plt.plot(test_losses, label='Test Loss')
-    plt.title('Training and Test Loss over Epochs')
+    plt.plot(range(skip_epochs, skip_epochs + len(train_losses)), train_losses, label='Train Loss')
+    plt.plot(range(skip_epochs, skip_epochs + len(test_losses)), test_losses, label='Test Loss')
+    plt.title(f'Training and Test Loss over Epochs (starting from epoch {skip_epochs + 1})')
     plt.xlabel('Epoch Number')
     plt.ylabel('Loss')
+    plt.yscale('log')
+    min_loss = min(min(train_losses), min(test_losses))
+    max_loss = max(max(train_losses), max(test_losses))
+    plt.ylim([min_loss / 10, max_loss * 10])
+
     plt.legend()
-    fig_name = f"{data_label}_model_{model_params}_loss.png"
+    fig_name = f"{data_label}_model_{model_params}_loss_{datetime.now().strftime('%Y-%m-%d')}.png"
     fig_path = os.path.join(figures_directory, fig_name)
     plt.savefig(fig_path)
     plt.show()
@@ -143,7 +156,7 @@ def plot_epoch_losses(train_losses, test_losses, data_label, model_params):
 
 # Main block to initiate training and testing
 if __name__ == "__main__":
-    data_file = "data/algorithm_1/2_2_10000_0.pth"
+    data_file = "/Users/miltonlin/Documents/GitHub/MinimumEntropyCoupling/src/data/data_gen_m2n2_alg/2x2_10000_1.pth"
     # we will extract data_label from the  data_file 
     data_label = data_file.split("/")[-1].split(".")[0]
     dataloader_train, dataloader_test = load_data(data_file)
@@ -151,5 +164,7 @@ if __name__ == "__main__":
     # we will extract model params, which are m,n from the model 
     model_params = f"{model.m}_{model.n}"
     trainer = Trainer(model, dataloader_train, dataloader_test)
-    trainer.train(epochs=10)  # Example for training 10 epochs
+    trainer.train(epochs=5)  # Example for training 10 epochs
     plot_epoch_losses(trainer.train_losses, trainer.test_losses, data_label, model_params)
+    
+    

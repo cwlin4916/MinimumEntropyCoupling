@@ -16,14 +16,9 @@ Within an information-theoretic framework of [steganography](https://arxiv.org/a
 
 ## Src File Structure 
 
-- `data_generation_algorithm1.py`: Contains the algorithm for generating data matrices with a specific entropy coupling characteristic.
+- `data_mec_gen.py`: Contains the algorithm for generating data matrices with a specific entropy coupling characteristic.
   
-- `model.py`: Defines the neural network architecture used for the entropy coupling model.
-  
-- `trainer.py`: Contains the Trainer class responsible for orchestrating the model training process with the provided data.
-  
-- `trainer1.py`: May represent an alternative or updated training script with variations from `trainer.py`.
-
+- `mec_trainer.py`: Defines the the boiler plate code for training mec model.
 
 ## Installation
 

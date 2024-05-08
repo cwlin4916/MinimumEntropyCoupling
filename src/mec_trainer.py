@@ -10,7 +10,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 from torch.optim import Adam
 import torch.nn.functional as F
-from model2 import DistributionTransformerModel  # Ensure correct import path
+from src.mec_model import DistributionTransformerModel  # Ensure correct import path
 from datetime import datetime
 
 # Configuration and Setup

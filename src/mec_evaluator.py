@@ -1,8 +1,9 @@
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 import torch.nn.functional as F
-from model2 import DistributionTransformerModel  # Ensure the correct import path
+from mec_model import DistributionTransformerModel  # Ensure the correct import path
 import numpy as np
+from data_gen_mecv1 import additive_gap
 # load in entropy and kl2 functions 
 
 # entropy function 
@@ -38,6 +39,8 @@ def load_data(filename):
 def evaluate(model, test_loader, device):
     model.eval()
     total_val_loss = 0
+    avg_additive_gap_model_prediction = 0
+    avg_additive_gap_algorithm =0 
     with torch.no_grad():
         for p, q, M in test_loader:
             p, q, M = p.to(device), q.to(device), M.to(device)
@@ -49,21 +52,29 @@ def evaluate(model, test_loader, device):
             print("Algorithm Output (M):", M[0].cpu().numpy())
             # calculate entropy  of M 
             print("Entropy of algorithm output M:", entropy2(M[0].cpu().numpy()))
-            
+            # now we compute additive gap against the original p,q 
+            print("Additive gap of algorithm output M:", additive_gap(p[0].cpu().numpy(), q[0].cpu().numpy(), M[0].cpu().numpy()))
             print("Model Prediction :", outputs[0].cpu().numpy())
-            # check that the sum of output is 1 
-            print("Sum of output:", outputs[0].sum().cpu().numpy())
+            
+            # # check that the sum of output is 1 
+            # print("Sum of output:", outputs[0].sum().cpu().numpy())
             # also calculate entropy of prediction  
             print("Entropy of Model Prediction:", entropy2(outputs[0].cpu().numpy())) 
+            print("Additive gap of Model Prediction:", additive_gap(p[0].cpu().numpy(), q[0].cpu().numpy(), outputs[0].cpu().numpy()))
+            # also compute additive gap 
+            avg_additive_gap_algorithm += additive_gap(p[0].cpu().numpy(), q[0].cpu().numpy(), M[0].cpu().numpy())
+            avg_additive_gap_model_prediction += additive_gap(p[0].cpu().numpy(), q[0].cpu().numpy(), outputs[0].cpu().numpy())
+            
     avg_val_loss = total_val_loss / len(test_loader)
     print(f"Test Loss: {avg_val_loss:.4f}")
-
+    print("Average Additive Gap of Algorithm:", avg_additive_gap_algorithm / len(test_loader))
+    print("Average Additive Gap of Model Prediction:", avg_additive_gap_model_prediction / len(test_loader))
 if __name__ == "__main__":
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model = DistributionTransformerModel(input_dim=1, model_dim=512, num_heads=8, num_layers=3).to(device)
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-4)
 
-    test_data_path = "/Users/miltonlin/Documents/GitHub/MinimumEntropyCoupling/src/data/mec_generation/mec_data_3_10^4_test.pth"
+    test_data_path = "/Users/miltonlin/Documents/GitHub/MinimumEntropyCoupling/src/data/mec_generation/mec_data_4_10^4_test.pth"
     model_checkpoint_path = "/Users/miltonlin/Documents/GitHub/MinimumEntropyCoupling/src/output/model_checkpoint_3_3_700.pth"
 
     test_loader = load_data(test_data_path)

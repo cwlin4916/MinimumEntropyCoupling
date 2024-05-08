@@ -19,16 +19,3 @@ Within an information-theoretic framework of [steganography](https://arxiv.org/a
 - `data_mec_gen.py`: Contains the algorithm for generating mec data coupling. 
   
 - `mec_trainer.py`: Defines the the boiler plate code for training mec model.
-
-## Installation
-
-Instructions on how to run code. 
-To train the model 
-```bash
-python trainer.py
-```
-To execute the data generation algorithm:
-
-```bash
-python data_generation_algorithm1.py
-``` 

@@ -7,12 +7,6 @@ Within an information-theoretic framework of [steganography](https://arxiv.org/a
 
 - [Description](#Description)
 - [Src file](#SrcFileStructure)
-- [Project Structure](#project-structure)
-- [Dependencies](#dependencies)
-- [Testing](#testing)
-- [License](#license)
-- [Acknowledgments](#acknowledgments)
-- [Directores](#directories)
 
 ## Src File Structure 
 
